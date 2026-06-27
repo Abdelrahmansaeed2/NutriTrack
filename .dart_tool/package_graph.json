@@ -13,9 +13,9 @@
         "firebase_core",
         "fl_chart",
         "flutter",
+        "flutter_bloc",
         "google_fonts",
         "http",
-        "provider",
         "shared_preferences"
       ],
       "devDependencies": [
@@ -117,15 +117,6 @@
         "firebase_core_web",
         "flutter",
         "meta"
-      ]
-    },
-    {
-      "name": "provider",
-      "version": "6.1.5+1",
-      "dependencies": [
-        "collection",
-        "flutter",
-        "nested"
       ]
     },
     {
@@ -402,13 +393,6 @@
       ]
     },
     {
-      "name": "nested",
-      "version": "1.0.0",
-      "dependencies": [
-        "flutter"
-      ]
-    },
-    {
       "name": "path_provider",
       "version": "2.1.5",
       "dependencies": [
@@ -600,6 +584,38 @@
       "dependencies": [
         "meta",
         "path"
+      ]
+    },
+    {
+      "name": "flutter_bloc",
+      "version": "8.1.6",
+      "dependencies": [
+        "bloc",
+        "flutter",
+        "provider"
+      ]
+    },
+    {
+      "name": "provider",
+      "version": "6.1.5+1",
+      "dependencies": [
+        "collection",
+        "flutter",
+        "nested"
+      ]
+    },
+    {
+      "name": "nested",
+      "version": "1.0.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "bloc",
+      "version": "8.1.4",
+      "dependencies": [
+        "meta"
       ]
     }
   ],

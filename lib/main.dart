@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
-import 'core/providers/app_state_provider.dart';
+import 'features/tracking/cubits/calorie_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   runApp(
-    // The definitive initialization root wrapper configuring a global MultiProvider.
-    MultiProvider(
+    MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider<AppStateProvider>(
-          create: (_) => AppStateProvider()..initializeApp(),
+        BlocProvider<CalorieCubit>(
+          create: (_) => CalorieCubit(),
         ),
-        // Add other global or feature-specific providers here
+        // Add other global or feature-specific cubits here
       ],
       child: const NutriTrackApp(),
     ),
