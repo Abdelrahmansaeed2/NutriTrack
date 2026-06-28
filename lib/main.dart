@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutri_track/features/on_boarding/ui/screens/on_boarding_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'features/tracking/cubits/calorie_cubit.dart';
 
@@ -28,14 +29,11 @@ class NutriTrackApp extends StatelessWidget {
       title: 'NutriTrack AI',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'NutriTrack AI Architecture Core Initialized',
-            style: TextStyle(color: Colors.pink, fontSize: 25),
-          ),
-        ),
-      ),
+      home: Scaffold(
+        body: 
+        OnBoardingScreen(),
+      
+    ),
     );
   }
 }
