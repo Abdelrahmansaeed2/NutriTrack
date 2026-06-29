@@ -1,40 +1,42 @@
-
-import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:nutri_track/core/networking/api_service.dart'; // Adjust path to your ApiClient
 import 'package:nutri_track/features/foodSearch/models/food_meal.dart';
 
 class FoodSearchService {
-  final Dio _dio;
+  final ApiClient _apiClient;
 
-  FoodSearchService(this._dio);
+  FoodSearchService(this._apiClient);
 
   Future<List<FoodModel>> searchFoods({
     required String query,
-    String? tag
+    String? tag,
   }) async {
-    final response = await _dio.get("/api/foods/search",
-    queryParameters: {
+    final queryParams = {
       "query": query,
-      if(tag != null && tag!="all") "tag" : tag,
-    });
+      if (tag != null && tag != "all") "tag": tag,
+    };
 
-    return (response.data as List).map((e) => FoodModel.fromJson(e)).toList();
+    final uri = Uri(path: "/api/foods/search", queryParameters: queryParams);
 
+    final response = await _apiClient.get(uri.toString());
+
+    final List decodedData = jsonDecode(response.body);
+    return decodedData.map((e) => FoodModel.fromJson(e)).toList();
   }
 
   Future<List<FoodModel>> getFavourites() async {
-    final response = await _dio.get("/api/foods/favorites");
-    return (response.data as List).map((e) => FoodModel.fromJson(e)).toList();
+    final response = await _apiClient.get("/api/foods/favorites");
+    
+    final List decodedData = jsonDecode(response.body);
+    return decodedData.map((e) => FoodModel.fromJson(e)).toList();
   }
 
-
-  
-
   Future<void> addToFavourites(String id) async {
-    await _dio.post("/api/foods/favorites/$id");
+    await _apiClient.post("/api/foods/favorites/$id", {});
   }
 
   Future<void> removeFromFavourites(String id) async {
-     await _dio.delete("/api/foods/favorites/$id");
+    await _apiClient.delete("/api/foods/favorites/$id");
   }
 
   Future<FoodModel> createCustomFood({
@@ -44,18 +46,20 @@ class FoodSearchService {
     String? brand,
     String? servingSize,
   }) async {
-    final response = await _dio.post(
+    final bodyData = {
+      'name': name,
+      'calories': calories,
+      'macros': macros.toJson(),
+      if (brand != null) 'brand': brand,
+      if (servingSize != null) 'servingSize': servingSize,
+    };
+
+    final response = await _apiClient.post(
       '/api/foods/custom',
-      data: {
-        'name': name,
-        'calories': calories,
-        'macros': macros.toJson(),
-        if (brand != null) 'brand': brand,
-        if (servingSize != null) 'servingSize': servingSize,
-      },
+       bodyData,
     );
-    return FoodModel.fromJson(response.data);
+    
+    final Map<String, dynamic> decodedData = jsonDecode(response.body);
+    return FoodModel.fromJson(decodedData);
   }
-
-
 }

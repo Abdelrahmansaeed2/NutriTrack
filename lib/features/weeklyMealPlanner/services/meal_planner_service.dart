@@ -1,46 +1,55 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:nutri_track/core/networking/api_service.dart'; // Adjust path to your ApiClient
 import 'package:nutri_track/features/weeklyMealPlanner/models/plan_meal_model.dart';
 import 'package:nutri_track/features/weeklyMealPlanner/models/weekly_plan_model.dart';
 
 class MealPlannerService {
-  final Dio _dio;
+  final ApiClient _apiClient;
 
-  MealPlannerService(this._dio);
+  MealPlannerService(this._apiClient);
 
   Future<WeeklyPlan> getLatestWeeklyPlan() async {
-    final response = await _dio.get("/api/ai/weekly-plan");
-    return WeeklyPlan.fromJson(response.data);
+    final response = await _apiClient.get("/api/ai/weekly-plan");
+    
+    final Map<String, dynamic> decodedData = jsonDecode(response.body);
+    return WeeklyPlan.fromJson(decodedData);
   }
 
   Future<WeeklyPlan> getWeeklyPlanById(String id) async {
-    final response = await _dio.get('/api/ai/weekly-plan/$id');
-    return WeeklyPlan.fromJson(response.data['plan']);
+    final response = await _apiClient.get('/api/ai/weekly-plan/$id');
+    
+    final Map<String, dynamic> decodedData = jsonDecode(response.body);
+    return WeeklyPlan.fromJson(decodedData['plan']);
   }
 
   Future<WeeklyPlan> generateWeeklyPlan(String startDate) async {
-    final response = await _dio.post(
+    final response = await _apiClient.post(
       '/api/ai/generate-weekly-plan',
-      data: {'startDate': startDate},
+       {'startDate': startDate},
     );
-      print('generateWeeklyPlan response: ${response.data}');
-    return WeeklyPlan.fromJson(response.data['plan']);
+    
+
+    print("🚨 RAW BACKEND RESPONSE: ${response.body}");    
+    
+    final Map<String, dynamic> decodedData = jsonDecode(response.body);
+    return WeeklyPlan.fromJson(decodedData['plan']);
   }
 
-   Future<PlanMeal> swapMeal({
+  Future<PlanMeal> swapMeal({
     required String planId,
     required String date,
     required String mealType,
   }) async {
-    final response = await _dio.post(
+    final response = await _apiClient.post(
       '/api/ai/swap-meal',
-      data: {
+       {
         'planId': planId,
         'date': date,
         'mealType': mealType,
       },
     );
-    return PlanMeal.fromJson(response.data['swappedMeal']);
+    
+    final Map<String, dynamic> decodedData = jsonDecode(response.body);
+    return PlanMeal.fromJson(decodedData['swappedMeal']);
   }
-
- 
 }

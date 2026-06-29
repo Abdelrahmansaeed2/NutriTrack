@@ -1,21 +1,23 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:nutri_track/core/networking/api_service.dart';
 import '../models/grocery_list_model.dart';
 
 class GroceryService {
-  final Dio _dio;
-
-  GroceryService(this._dio);
+  
+  final ApiClient _apiClient;
+  GroceryService(this._apiClient);
 
   Future<List<GroceryList>> getGroceryLists() async {
-    final response = await _dio.get('/api/tracking/grocery');
-    return (response.data as List)
-        .map((e) => GroceryList.fromJson(e))
-        .toList();
+    final response = await _apiClient.get('/api/tracking/grocery');
+    final List decodedData = jsonDecode(response.body);
+    return decodedData.map((e) => GroceryList.fromJson(e)).toList();
   }
 
   Future<GroceryList> getGroceryListById(String listId) async {
-    final response = await _dio.get('/api/tracking/grocery/$listId');
-    return GroceryList.fromJson(response.data);
+    final response = await _apiClient.get('/api/tracking/grocery/$listId');
+    return GroceryList.fromJson(jsonDecode(response.body));
   }
 
   Future<void> updateItemStatus({
@@ -23,17 +25,17 @@ class GroceryService {
     required String itemName,
     required bool isChecked,
   }) async {
-    await _dio.put(
+    await _apiClient.put(
       '/api/tracking/grocery/$listId/item',
-      data: {
+       {
         'itemName': itemName,
         'isChecked': isChecked,
-      },
+      }
     );
   }
 
   Future<void> clearCheckedItems(String listId) async {
-    await _dio.delete('/api/tracking/grocery/$listId/checked');
+    await _apiClient.delete('/api/tracking/grocery/$listId/checked');
   }
 
   Future<void> addItem({
@@ -42,21 +44,21 @@ class GroceryService {
     required String quantity,
       required String category,
   }) async {
-    await _dio.post(
+    await _apiClient.post(
       '/api/tracking/grocery/$listId/item',
-      data: {
+       {
          'name': name,
       'quantity': quantity,
       'category': category,
-      },
+      }
     );
   }
 
   Future<GroceryList> generateGroceryList(String planId) async {
-    final response = await _dio.post(
+    final response = await _apiClient.post(
       '/api/ai/generate-grocery-list',
-      data: {'planId': planId},
+       {'planId': planId},
     );
-    return GroceryList.fromJson(response.data['groceryList']);
+    return GroceryList.fromJson(jsonDecode(response.body)['groceryList']);
   }
 }
