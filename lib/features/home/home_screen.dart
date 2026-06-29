@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:nutri_track/features/analytics/screens/analytics_dashboard.dart';
+import 'package:nutri_track/features/daily%20dashboard/screens/daily_dashboard_screen.dart';
 import 'package:nutri_track/features/dashboard/screens/dashboard.dart';
 import 'package:nutri_track/features/foodSearch/screens/food_search_screen.dart';
 import 'package:nutri_track/features/settings/screens/settings.dart';
@@ -22,11 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    const DashboardScreen(),           
+    const DailyDashboardScreen(),           
     const FoodSearchScreen(),          
     const _PlannerTab(),               
     const AnalyticsDashboardScreen(),  
-    const SettingsScreen(),            
+    const _ProfileTab(),            
   ];
   @override
   Widget build(BuildContext context) {
@@ -146,6 +147,89 @@ class _PlannerTabState extends State<_PlannerTab> {
                         color: _plannerIndex == 1
                             ? Colors.white
                             : Colors.grey[600],
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileTab extends StatefulWidget {
+  const _ProfileTab();
+
+  @override
+  State<_ProfileTab> createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends State<_ProfileTab> {
+  int _profileIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: IndexedStack(
+            index: _profileIndex,
+            children: const [
+              DashboardScreen(), 
+              SettingsScreen(),  
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          color: Colors.white,
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _profileIndex = 0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: _profileIndex == 0
+                          ? const Color(0xFF1DB574)
+                          : Colors.grey[100],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      'Profile',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: _profileIndex == 0 ? Colors.white : Colors.grey[600],
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _profileIndex = 1),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: _profileIndex == 1
+                          ? const Color(0xFF1DB574)
+                          : Colors.grey[100],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      'Settings',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: _profileIndex == 1 ? Colors.white : Colors.grey[600],
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),

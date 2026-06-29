@@ -48,7 +48,6 @@ class AuthRepository {
     } else if (response.statusCode == 401) {
       throw Exception('Unauthorized backend request');
     } else {
-      // Profile may not exist yet for new users — return a minimal model
       return UserModel(uid: user.uid, email: user.email ?? '', name: '');
     }
   }

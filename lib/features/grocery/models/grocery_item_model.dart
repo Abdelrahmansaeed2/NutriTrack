@@ -13,7 +13,7 @@ class GroceryItem {
 
   factory GroceryItem.fromJson(Map<String, dynamic> json) => GroceryItem(
         name: json['name'],
-        quantity: json['quantity'],
+        quantity: json['quantity'].toString(),
         category: json['category'] ?? 'Other',
         isChecked: json['isChecked'] ?? false,
       );
