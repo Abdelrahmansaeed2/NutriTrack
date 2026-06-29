@@ -237,14 +237,14 @@ const updateGroceryItem = async (uid, listId, itemName, isChecked) => {
   return updatedItems;
 };
 
-const addGroceryItem = async (uid, listId, itemName, quantity) => {
+const addGroceryItem = async (uid, listId, itemName, quantity, category) => {
   const listRef = db.collection('groceryLists').doc(listId);
   const doc = await listRef.get();
   if (!doc.exists || doc.data().userId !== uid) return null;
 
   const items = doc.data().items || [];
   const newItem = {
-    category: 'Pantry', // Default category for manually added items
+    category: category || 'Pantry', // Default category for manually added items
     name: itemName,
     quantity: quantity || '1 unit',
     isChecked: false

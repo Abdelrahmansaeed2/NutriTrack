@@ -355,7 +355,7 @@ const runTests = async () => {
         res = await fetch(`${BASE_URL}/tracking/grocery/${listId}/item`, {
           method: 'POST',
           headers: HEADERS,
-          body: JSON.stringify({ itemName: 'Organic Spinach', quantity: '1 bag' })
+          body: JSON.stringify({ itemName: 'Organic Spinach', quantity: '1 bag', category: 'Produce' })
         });
         data = await res.json();
         logResult('/tracking/grocery/:listId/item', 'POST', res.status, data);

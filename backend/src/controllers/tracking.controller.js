@@ -128,13 +128,13 @@ const logWeight = async (req, res, next) => {
 const addGroceryItem = async (req, res, next) => {
   try {
     const { listId } = req.params;
-    const { itemName, name, quantity } = req.body;
+    const { itemName, name, quantity, category } = req.body;
     const finalItemName = itemName || name;
     const uid = req.user.uid;
     
     if (!finalItemName) return res.status(400).json({ error: 'itemName or name is required' });
 
-    const newItem = await trackingService.addGroceryItem(uid, listId, finalItemName, quantity);
+    const newItem = await trackingService.addGroceryItem(uid, listId, finalItemName, quantity, category);
     if (!newItem) {
       return res.status(404).json({ error: 'Grocery list not found or unauthorized' });
     }
