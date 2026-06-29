@@ -6,12 +6,14 @@ const getDashboardStats = async (uid, userProfile) => {
   const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
   const startDateString = thirtyDaysAgo.toISOString().split('T')[0];
 
+  // Fetch all logs for the user and filter in-memory to avoid requiring a composite index
   const logsSnapshot = await db.collection('dailyLogs')
     .where('userId', '==', uid)
-    .where('date', '>=', startDateString)
     .get();
 
-  const logs = logsSnapshot.docs.map(doc => doc.data());
+  const logs = logsSnapshot.docs
+    .map(doc => doc.data())
+    .filter(log => log.date >= startDateString);
 
   const proteinTarget = userProfile.targets.proteinGrams || 0;
   const calorieTarget = userProfile.targets.dailyCalories || 0;

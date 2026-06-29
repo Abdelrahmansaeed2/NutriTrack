@@ -4,9 +4,20 @@ const { onboardingSchema } = require('../models/user.schema');
 const getProfile = async (req, res, next) => {
   try {
     const uid = req.user.uid;
-    const profile = await userService.getUserProfile(uid);
+    let profile = await userService.getUserProfile(uid);
     if (!profile) {
-      return res.status(404).json({ error: 'User profile not found. Please complete onboarding.' });
+      const email = req.user.email || 'user@example.com';
+      const defaultData = {
+        name: email.split('@')[0],
+        bio: 'Dedicated to achieving peak performance through precise nutrition.',
+        biologicalSex: 'Male',
+        age: 25,
+        heightCm: 175,
+        weightKg: 70,
+        targetWeightKg: 70,
+        activityLevel: 'Active'
+      };
+      profile = await userService.onboardUser(uid, email, defaultData);
     }
     res.status(200).json(profile);
   } catch (error) {

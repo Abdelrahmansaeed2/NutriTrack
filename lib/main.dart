@@ -1,38 +1,63 @@
+import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'core/theme/app_theme.dart';
+import 'package:nutri_track/core/network/api_client.dart' as dio_client;
+import 'package:nutri_track/core/networking/api_service.dart';
+import 'package:nutri_track/core/routing/app_router.dart';
+import 'package:nutri_track/features/auth/login/data/repo/auth_repo.dart';
+import 'package:nutri_track/features/foodSearch/cubits/food_search_cubit.dart';
+import 'package:nutri_track/features/foodSearch/services/food_search_service.dart';
+import 'package:nutri_track/features/grocery/cubits/grocery_cubit.dart';
+import 'package:nutri_track/features/grocery/services/grocery_service.dart';
+import 'package:nutri_track/features/settings/cubits/theme_cubit.dart';
+import 'package:nutri_track/features/weeklyMealPlanner/cubits/meal_planner_cubit.dart';
+import 'package:nutri_track/features/weeklyMealPlanner/services/meal_planner_service.dart';
+import 'package:nutri_track/firebase_options.dart';
+import 'package:nutri_track/nutri_track_app.dart';
 import 'features/tracking/cubits/calorie_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final dio = Dio(BaseOptions(
+    baseUrl: 'https://nutritrack-backend-blond.vercel.app',
+    headers: {'Authorization': 'Bearer TEST_TOKEN_123'},
+  ));
+
   
+  dio.interceptors.add(LogInterceptor(
+  requestBody: true,
+  responseBody: true,
+  error: true,
+));
+
+
+  final apiClient = ApiClient();
+  final AuthRepository authRepository = AuthRepository( apiClient );
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider<ThemeCubit>(
+          create: (_) => ThemeCubit(),
+        ),
         BlocProvider<CalorieCubit>(
           create: (_) => CalorieCubit(),
         ),
-        // Add other global or feature-specific cubits here
+        BlocProvider<FoodSearchCubit>(
+          create: (_) => FoodSearchCubit(FoodSearchService(apiClient)),
+        ),
+        BlocProvider(
+          create: (_) => MealPlannerCubit(MealPlannerService(apiClient))
+        ),
+        BlocProvider(create: 
+        (_) => GroceryCubit(GroceryService(dio_client.ApiClient.instance.dio))
+        )
       ],
-      child: const NutriTrackApp(),
+      child: NutriTrackApp(appRouter: AppRouter(authRepository: authRepository)),
     ),
   );
-}
-
-class NutriTrackApp extends StatelessWidget {
-  const NutriTrackApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'NutriTrack AI',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const Scaffold(
-        body: Center(
-          child: Text('NutriTrack AI Architecture Core Initialized'),
-        ),
-      ),
-    );
-  }
 }
