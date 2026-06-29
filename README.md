@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🥦 NutriTrack AI
+# NutriTrack AI
 
 ### *Precision Nutrition Engineered for Peak Performance*
 
@@ -268,10 +268,8 @@ Push to the connected GitHub repository to auto-deploy via Vercel CI/CD.
 
 ## 👥 Team
 
-Built with ❤️ as part of a collaborative full-stack mobile development project.
-
----
-
-<div align="center">
-  <sub>NutriTrack AI — Precision Nutrition for Peak Performance 🏆</sub>
-</div>
+Built with:
+Abd Elrahman Saeed And
+Abd Elrahman Nader And
+Ebrahim reda And
+Mohmeed Maher 
