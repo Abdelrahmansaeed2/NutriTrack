@@ -20,6 +20,12 @@ class GroceryService {
     return GroceryList.fromJson(jsonDecode(response.body));
   }
 
+  Future<String> getLatestWeeklyPlanId() async {
+  final response = await _apiClient.get('/api/ai/weekly-plan');
+  final data = jsonDecode(response.body);
+  return data['id'] as String;
+}
+
   Future<void> updateItemStatus({
     required String listId,
     required String itemName,

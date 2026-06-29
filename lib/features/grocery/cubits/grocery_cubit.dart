@@ -9,21 +9,27 @@ class GroceryCubit extends Cubit<GroceryState> {
   GroceryCubit(this._service) : super(GroceryInitial());
 
   Future<void> loadGroceryLists() async {
-    emit(GroceryLoading());
-    try {
-      final lists = await _service.getGroceryLists();
-      if (lists.isEmpty) {
-        emit(GroceryError('No grocery lists found'));
-        return;
+  emit(GroceryLoading());
+  try {
+    final lists = await _service.getGroceryLists();
+
+    if (lists.isEmpty) {
+      emit(GroceryGenerating());
+      try {
+        final planId = await _service.getLatestWeeklyPlanId();
+        final newList = await _service.generateGroceryList(planId);
+        emit(GroceryLoaded(lists: [newList], selectedList: newList));
+      } catch (e) {
+        emit(GroceryError('No grocery list found and failed to generate one: ${e.toString()}'));
       }
-      emit(GroceryLoaded(
-        lists: lists,
-        selectedList: lists.first,
-      ));
-    } catch (e) {
-      emit(GroceryError(e.toString()));
+      return;
     }
+
+    emit(GroceryLoaded(lists: lists, selectedList: lists.first));
+  } catch (e) {
+    emit(GroceryError(e.toString()));
   }
+}
 
 
   Future<void> addItem({
