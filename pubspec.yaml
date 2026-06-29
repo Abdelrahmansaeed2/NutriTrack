@@ -14,13 +14,10 @@ dependencies:
   firebase_auth: ^5.1.1
   cloud_firestore: ^5.0.1
   http: ^1.2.1
-  fl_chart: ^1.2.0
+  fl_chart: ^0.68.0
   shared_preferences: ^2.2.3
   dartz: ^0.10.1
   dio: ^5.9.2
-  flutter_svg: ^2.0.10
-  equatable: ^2.0.5
-  go_router: ^17.2.3
   intl: ^0.20.3
 
 dev_dependencies:
@@ -32,4 +29,3 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/images/logo.png

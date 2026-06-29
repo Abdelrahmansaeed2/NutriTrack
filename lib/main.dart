@@ -1,22 +1,21 @@
+import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'core/theme/app_theme.dart';
-import 'presentation/cubits/auth_cubit.dart';
-import 'presentation/cubits/onboarding_cubit.dart';
-import 'presentation/cubits/dashboard_cubit.dart';
-import 'presentation/cubits/food_search_cubit.dart';
-import 'presentation/cubits/weekly_planner_cubit.dart';
-import 'presentation/cubits/food_detail_cubit.dart';
-import 'presentation/cubits/recipe_builder_cubit.dart';
-import 'presentation/cubits/water_tracking_cubit.dart';
-import 'presentation/cubits/analytics_cubit.dart';
-import 'presentation/cubits/grocery_list_cubit.dart';
-import 'presentation/cubits/ai_meal_plan_cubit.dart';
-import 'presentation/cubits/profile_cubit.dart';
-import 'presentation/cubits/settings_cubit.dart';
-import 'core/router/app_router.dart';
+import 'package:nutri_track/core/network/api_client.dart' as dio_client;
+import 'package:nutri_track/core/networking/api_service.dart';
+import 'package:nutri_track/core/routing/app_router.dart';
+import 'package:nutri_track/features/auth/login/data/repo/auth_repo.dart';
+import 'package:nutri_track/features/foodSearch/cubits/food_search_cubit.dart';
+import 'package:nutri_track/features/foodSearch/services/food_search_service.dart';
+import 'package:nutri_track/features/grocery/cubits/grocery_cubit.dart';
+import 'package:nutri_track/features/grocery/services/grocery_service.dart';
+import 'package:nutri_track/features/settings/cubits/theme_cubit.dart';
+import 'package:nutri_track/features/weeklyMealPlanner/cubits/meal_planner_cubit.dart';
+import 'package:nutri_track/features/weeklyMealPlanner/services/meal_planner_service.dart';
+import 'package:nutri_track/firebase_options.dart';
+import 'package:nutri_track/nutri_track_app.dart';
+import 'features/tracking/cubits/calorie_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,38 +23,41 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  final dio = Dio(BaseOptions(
+    baseUrl: 'https://nutritrack-backend-blond.vercel.app',
+    headers: {'Authorization': 'Bearer TEST_TOKEN_123'},
+  ));
+
+  
+  dio.interceptors.add(LogInterceptor(
+  requestBody: true,
+  responseBody: true,
+  error: true,
+));
+
+
+  final apiClient = ApiClient();
+  final AuthRepository authRepository = AuthRepository( apiClient );
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<AuthCubit>(create: (_) => AuthCubit()),
-        BlocProvider<OnboardingCubit>(create: (_) => OnboardingCubit()),
-        BlocProvider<DashboardCubit>(create: (_) => DashboardCubit()),
-        BlocProvider<FoodSearchCubit>(create: (_) => FoodSearchCubit()),
-        BlocProvider<WeeklyPlannerCubit>(create: (_) => WeeklyPlannerCubit()),
-        BlocProvider<FoodDetailCubit>(create: (_) => FoodDetailCubit()),
-        BlocProvider<RecipeBuilderCubit>(create: (_) => RecipeBuilderCubit()),
-        BlocProvider<WaterTrackingCubit>(create: (_) => WaterTrackingCubit()),
-        BlocProvider<AnalyticsCubit>(create: (_) => AnalyticsCubit()),
-        BlocProvider<GroceryListCubit>(create: (_) => GroceryListCubit()),
-        BlocProvider<AIMealPlanCubit>(create: (_) => AIMealPlanCubit()),
-        BlocProvider<ProfileCubit>(create: (_) => ProfileCubit()),
-        BlocProvider<SettingsCubit>(create: (_) => SettingsCubit()),
+        BlocProvider<ThemeCubit>(
+          create: (_) => ThemeCubit(),
+        ),
+        BlocProvider<CalorieCubit>(
+          create: (_) => CalorieCubit(),
+        ),
+        BlocProvider<FoodSearchCubit>(
+          create: (_) => FoodSearchCubit(FoodSearchService(apiClient)),
+        ),
+        BlocProvider(
+          create: (_) => MealPlannerCubit(MealPlannerService(apiClient))
+        ),
+        BlocProvider(create: 
+        (_) => GroceryCubit(GroceryService(dio_client.ApiClient.instance.dio))
+        )
       ],
-      child: const NutriTrackApp(),
+      child: NutriTrackApp(appRouter: AppRouter(authRepository: authRepository)),
     ),
   );
-}
-
-class NutriTrackApp extends StatelessWidget {
-  const NutriTrackApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'NutriTrack AI',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      routerConfig: AppRouter.router,
-    );
-  }
 }
