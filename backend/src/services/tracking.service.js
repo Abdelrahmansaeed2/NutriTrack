@@ -126,7 +126,7 @@ const removeMealItem = async (uid, date, mealType, index) => {
   
   if (!doc.exists) return null;
   const data = doc.data();
-  const mealArray = data.meals[mealType] || [];
+  const mealArray = data.meals?.[mealType] || [];
   
   if (index < 0 || index >= mealArray.length) {
     throw new Error('Invalid meal index');
@@ -195,7 +195,7 @@ const logWeight = async (uid, date, weightKg) => {
   }
 
   await docRef.set({
-    weightLog: weightKg,
+    weightKg: weightKg,
     userId: uid,
     date: date
   }, { merge: true });

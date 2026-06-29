@@ -164,6 +164,11 @@ const generateGroceryList = async (uid, planId) => {
     });
 
     const aiResponse = JSON.parse(chatCompletion.choices[0].message.content);
+    const items = aiResponse.items || aiResponse.grocery_list || aiResponse.groceryList || (Array.isArray(aiResponse) ? aiResponse : null);
+
+    if (!items || !Array.isArray(items)) {
+      throw new Error('AI response did not contain a valid items array');
+    }
 
     const listRef = db.collection('groceryLists').doc();
     const listData = {
@@ -171,7 +176,7 @@ const generateGroceryList = async (uid, planId) => {
       userId: uid,
       weekOf: planData.startDate,
       planId: planId,
-      items: aiResponse.items,
+      items: items,
       createdAt: new Date().toISOString()
     };
 

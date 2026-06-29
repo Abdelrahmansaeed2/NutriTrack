@@ -34,8 +34,8 @@ const getDashboardStats = async (uid, userProfile) => {
     }
 
     // Weight log
-    if (log.weightLog) {
-      weightTrend.push({ date: log.date, weight: log.weightLog });
+    if (log.weightKg) {
+      weightTrend.push({ date: log.date, weightKg: log.weightKg });
     }
   });
 
@@ -45,7 +45,7 @@ const getDashboardStats = async (uid, userProfile) => {
   if (weightTrend.length > 0) {
     // Sort by date ascending
     weightTrend.sort((a, b) => new Date(a.date) - new Date(b.date));
-    const latestWeight = weightTrend[weightTrend.length - 1].weight;
+    const latestWeight = weightTrend[weightTrend.length - 1].weightKg;
     const initialWeight = userProfile.onboarding.weightKg;
     totalWeightLost = parseFloat((initialWeight - latestWeight).toFixed(1));
   }

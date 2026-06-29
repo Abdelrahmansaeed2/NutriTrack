@@ -1,5 +1,6 @@
 const trackingService = require('../services/tracking.service');
 const { logMealSchema, logWaterSchema } = require('../models/tracking.schema');
+const { db } = require('../config/firebase.config');
 
 const getDailyLog = async (req, res, next) => {
   try {
@@ -185,7 +186,11 @@ const uploadProgressPhoto = async (req, res, next) => {
     const { photoUrl } = req.body;
     if (!photoUrl) return res.status(400).json({ error: 'photoUrl is required' });
 
-    // Mock link logic
+    // Save progress photo to daily logs in Firestore
+    await db.collection('dailyLogs').doc(`${uid}_${date}`).set({
+      progressPhotoUrl: photoUrl
+    }, { merge: true });
+
     res.status(200).json({ message: 'Progress photo saved', photoUrl, date });
   } catch (error) {
     next(error);
