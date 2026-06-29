@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nutri_track/core/helper/extentions.dart';
+import 'package:nutri_track/core/routing/routes.dart';
 import 'package:nutri_track/core/theming/colors.dart';
 import 'package:nutri_track/core/theming/styles.dart';
 
@@ -11,7 +13,9 @@ class GetStartedButton extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          context.PushNamed(Routes.loginScreen);
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryGreen, // Primary Green
           foregroundColor: Colors.white,
