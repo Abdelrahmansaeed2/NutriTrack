@@ -22,7 +22,7 @@ class FoodSearchService {
   }
 
   Future<List<FoodModel>> getFavourites() async {
-    final response = await _dio.get("/api/foods/favourites");
+    final response = await _dio.get("/api/foods/favorites");
     return (response.data as List).map((e) => FoodModel.fromJson(e)).toList();
   }
 
@@ -30,11 +30,11 @@ class FoodSearchService {
   
 
   Future<void> addToFavourites(String id) async {
-    await _dio.post("/api/foods/favourites/$id");
+    await _dio.post("/api/foods/favorites/$id");
   }
 
   Future<void> removeFromFavourites(String id) async {
-     await _dio.delete("/api/foods/favourites/$id");
+     await _dio.delete("/api/foods/favorites/$id");
   }
 
   Future<FoodModel> createCustomFood({
