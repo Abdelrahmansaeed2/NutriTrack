@@ -39,8 +39,9 @@ app.use('/api/foods', foodRoutes);
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({
-    error: 'Internal Server Error',
+  const statusCode = err.status || err.statusCode || 500;
+  res.status(statusCode).json({
+    error: statusCode === 500 ? 'Internal Server Error' : 'Bad Request',
     message: err.message
   });
 });
