@@ -170,17 +170,7 @@ const removeWaterIntake = async (uid, date, index) => {
   return getDailyLog(uid, date);
 };
 
-const clearCheckedGroceryItems = async (uid, listId) => {
-  const listRef = db.collection('groceryLists').doc(listId);
-  const doc = await listRef.get();
-  if (!doc.exists || doc.data().userId !== uid) return null;
 
-  const currentItems = doc.data().items || [];
-  const uncheckedItems = currentItems.filter(item => !item.isChecked);
-
-  await listRef.update({ items: uncheckedItems });
-  return uncheckedItems;
-};
 
 const logWeight = async (uid, date, weightKg) => {
   const docId = `${uid}_${date}`;
@@ -215,14 +205,38 @@ const getGroceryLists = async (uid) => {
 };
 
 const getGroceryListById = async (uid, listId) => {
-  const doc = await db.collection('groceryLists').doc(listId).get();
+  let doc;
+  if (listId === 'latest') {
+    const snapshot = await db.collection('groceryLists')
+      .where('userId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .get();
+    if (snapshot.empty) return null;
+    doc = snapshot.docs[0];
+  } else {
+    doc = await db.collection('groceryLists').doc(listId).get();
+  }
   if (!doc.exists || doc.data().userId !== uid) return null;
   return doc.data();
 };
 
 const updateGroceryItem = async (uid, listId, itemName, isChecked) => {
-  const listRef = db.collection('groceryLists').doc(listId);
-  const doc = await listRef.get();
+  let listRef;
+  let doc;
+  if (listId === 'latest') {
+    const snapshot = await db.collection('groceryLists')
+      .where('userId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .get();
+    if (snapshot.empty) return null;
+    listRef = db.collection('groceryLists').doc(snapshot.docs[0].id);
+    doc = await listRef.get();
+  } else {
+    listRef = db.collection('groceryLists').doc(listId);
+    doc = await listRef.get();
+  }
   if (!doc.exists || doc.data().userId !== uid) return null;
 
   const items = doc.data().items || [];
@@ -238,13 +252,43 @@ const updateGroceryItem = async (uid, listId, itemName, isChecked) => {
 };
 
 const addGroceryItem = async (uid, listId, itemName, quantity, category) => {
-  const listRef = db.collection('groceryLists').doc(listId);
-  const doc = await listRef.get();
-  if (!doc.exists || doc.data().userId !== uid) return null;
+  let listRef;
+  let doc;
+  
+  if (listId === 'latest' || !listId) {
+    const snapshot = await db.collection('groceryLists')
+      .where('userId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .get();
+      
+    if (!snapshot.empty) {
+      listRef = db.collection('groceryLists').doc(snapshot.docs[0].id);
+      doc = await listRef.get();
+    }
+  } else {
+    listRef = db.collection('groceryLists').doc(listId);
+    doc = await listRef.get();
+  }
+
+  // If no list exists yet, create one automatically
+  if (!doc || !doc.exists || doc.data().userId !== uid) {
+    listRef = db.collection('groceryLists').doc();
+    const newList = {
+      id: listRef.id,
+      userId: uid,
+      weekOf: new Date().toISOString().split('T')[0],
+      planId: 'manual',
+      items: [],
+      createdAt: new Date().toISOString()
+    };
+    await listRef.set(newList);
+    doc = await listRef.get();
+  }
 
   const items = doc.data().items || [];
   const newItem = {
-    category: category || 'Pantry', // Default category for manually added items
+    category: category || 'Pantry',
     name: itemName,
     quantity: quantity || '1 unit',
     isChecked: false
@@ -253,6 +297,31 @@ const addGroceryItem = async (uid, listId, itemName, quantity, category) => {
   const updatedItems = [...items, newItem];
   await listRef.update({ items: updatedItems });
   return newItem;
+};
+
+const clearCheckedGroceryItems = async (uid, listId) => {
+  let listRef;
+  let doc;
+  if (listId === 'latest') {
+    const snapshot = await db.collection('groceryLists')
+      .where('userId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .get();
+    if (snapshot.empty) return null;
+    listRef = db.collection('groceryLists').doc(snapshot.docs[0].id);
+    doc = await listRef.get();
+  } else {
+    listRef = db.collection('groceryLists').doc(listId);
+    doc = await listRef.get();
+  }
+  if (!doc.exists || doc.data().userId !== uid) return null;
+
+  const currentItems = doc.data().items || [];
+  const uncheckedItems = currentItems.filter(item => !item.isChecked);
+
+  await listRef.update({ items: uncheckedItems });
+  return uncheckedItems;
 };
 
 module.exports = {

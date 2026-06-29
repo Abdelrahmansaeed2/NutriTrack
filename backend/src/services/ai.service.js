@@ -5,11 +5,11 @@ const admin = require('firebase-admin');
 const generateWeeklyPlan = async (uid, userProfile, startDate) => {
   const prompt = `
     You are a professional AI Nutritionist. Generate a 7-day weekly meal plan for a user with the following profile:
-    - Dietary Framework: ${userProfile.aiPreferences.dietaryFramework}
-    - Allergies/Exclusions: ${userProfile.aiPreferences.allergies.join(', ')}
-    - Daily Calorie Target: ${userProfile.targets.dailyCalories} kcal
-    - Macros: ${userProfile.targets.proteinGrams}g Protein, ${userProfile.targets.carbsGrams}g Carbs, ${userProfile.targets.fatGrams}g Fat
-    - Meal Cadence: ${userProfile.aiPreferences.mealCadence} meals per day
+    - Dietary Framework: ${userProfile.aiPreferences?.dietaryFramework || 'Standard'}
+    - Allergies/Exclusions: ${(userProfile.aiPreferences?.allergies || []).join(', ')}
+    - Daily Calorie Target: ${userProfile.targets?.dailyCalories || 2000} kcal
+    - Macros: ${userProfile.targets?.proteinGrams || 150}g Protein, ${userProfile.targets?.carbsGrams || 200}g Carbs, ${userProfile.targets?.fatGrams || 70}g Fat
+    - Meal Cadence: ${userProfile.aiPreferences?.mealCadence || '3'} meals per day
 
     Return ONLY a valid JSON object in the exact following structure with NO markdown formatting, NO backticks, and NO extra text:
     {

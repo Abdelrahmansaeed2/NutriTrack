@@ -4,18 +4,19 @@ const userService = require('../services/user.service');
 const generateWeeklyPlan = async (req, res, next) => {
   try {
     const uid = req.user.uid;
-    const { startDate } = req.body; // Expects 'YYYY-MM-DD'
+    const { startDate } = req.body;
     
-    if (!startDate) {
-      return res.status(400).json({ error: 'startDate is required' });
-    }
+    const targetStartDate = startDate || new Date().toISOString().split('T')[0];
 
-    const userProfile = await userService.getUserProfile(uid);
+    let userProfile = await userService.getUserProfile(uid);
     if (!userProfile) {
-      return res.status(400).json({ error: 'User profile incomplete' });
+      userProfile = {
+        aiPreferences: { dietaryFramework: 'Standard', allergies: [] },
+        targets: { dailyCalories: 2000, proteinGrams: 150, carbsGrams: 200, fatGrams: 70 }
+      };
     }
 
-    const plan = await aiService.generateWeeklyPlan(uid, userProfile, startDate);
+    const plan = await aiService.generateWeeklyPlan(uid, userProfile, targetStartDate);
     res.status(201).json({ message: 'Weekly plan generated successfully', plan });
   } catch (error) {
     next(error);
@@ -25,11 +26,29 @@ const generateWeeklyPlan = async (req, res, next) => {
 const generateGroceryList = async (req, res, next) => {
   try {
     const { planId } = req.body;
-    if (!planId) return res.status(400).json({ error: 'planId is required' });
-
     const uid = req.user.uid;
-    const groceryList = await aiService.generateGroceryList(uid, planId);
-    
+
+    let targetPlanId = planId;
+    if (!targetPlanId) {
+      const latestPlan = await aiService.getLatestWeeklyPlan(uid);
+      if (latestPlan) {
+        targetPlanId = latestPlan.id;
+      } else {
+        // Automatically generate a weekly plan first
+        const today = new Date().toISOString().split('T')[0];
+        let userProfile = await userService.getUserProfile(uid);
+        if (!userProfile) {
+          userProfile = {
+            aiPreferences: { dietaryFramework: 'Standard', allergies: [] },
+            targets: { dailyCalories: 2000, proteinGrams: 150, carbsGrams: 200, fatGrams: 70 }
+          };
+        }
+        const newPlan = await aiService.generateWeeklyPlan(uid, userProfile, today);
+        targetPlanId = newPlan.id;
+      }
+    }
+
+    const groceryList = await aiService.generateGroceryList(uid, targetPlanId);
     res.status(200).json({ message: 'Grocery list generated', list: groceryList });
   } catch (error) {
     if (error.message === 'Weekly plan not found' || error.message === 'Unauthorized') {
