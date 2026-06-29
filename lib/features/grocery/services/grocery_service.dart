@@ -22,8 +22,11 @@ class GroceryService {
 
   Future<String> getLatestWeeklyPlanId() async {
   final response = await _apiClient.get('/api/ai/weekly-plan');
-  final data = jsonDecode(response.body);
-  return data['id'] as String;
+  final decoded = jsonDecode(response.body);
+  if (decoded == null || decoded['id'] == null) {
+    throw Exception('No weekly plan found');
+  }
+  return decoded['id'] as String;
 }
 
   Future<void> updateItemStatus({
@@ -61,10 +64,12 @@ class GroceryService {
   }
 
   Future<GroceryList> generateGroceryList(String planId) async {
-    final response = await _apiClient.post(
-      '/api/ai/generate-grocery-list',
-       {'planId': planId},
-    );
-    return GroceryList.fromJson(jsonDecode(response.body)['groceryList']);
-  }
+  final response = await _apiClient.post(
+    '/api/ai/generate-grocery-list',
+    {'planId': planId},
+  );
+  final decoded = jsonDecode(response.body);
+  final listJson = decoded['groceryList'] ?? decoded;
+  return GroceryList.fromJson(listJson as Map<String, dynamic>);
+}
 }

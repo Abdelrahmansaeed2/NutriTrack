@@ -71,6 +71,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                         children: [
                           const SizedBox(height: 16),
                           GroceryProgressCard(
+                            onRegenerate: () => context.read<GroceryCubit>().regenerate(),
                             totalItems: list.totalItems,
                             remainingItems: list.remainingItems,
                             onClearChecked: () =>

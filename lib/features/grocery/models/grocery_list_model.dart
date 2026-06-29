@@ -27,13 +27,13 @@ class GroceryList {
   int get checkedItems => items.where((i) => i.isChecked).length;
   int get remainingItems => totalItems - checkedItems;
 
-  factory GroceryList.fromJson(Map<String, dynamic> json) => GroceryList(
-        id: json['id'],
-        planId: json['planId'],
-        weekOf: json['weekOf'],
-        createdAt: json['createdAt'],
-        items: (json['items'] as List? ?? [])
-            .map((e) => GroceryItem.fromJson(e))
-            .toList(),
-      );
+factory GroceryList.fromJson(Map<String, dynamic> json) => GroceryList(
+      id: json['id'] as String? ?? '',
+      planId: json['planId'] as String? ?? '',
+      weekOf: json['weekOf'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      items: (json['items'] as List? ?? [])
+          .map((e) => GroceryItem.fromJson(e))
+          .toList(),
+    );
 }
