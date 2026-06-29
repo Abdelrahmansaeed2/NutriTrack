@@ -1,178 +1,277 @@
-# NutriTrack AI 🍏
+<div align="center">
 
-NutriTrack AI is a premium, AI-powered nutrition tracking and weekly meal planning application designed to deliver precision nutrition engineered for peak athletic performance. The project consists of a **Flutter Mobile App** (Frontend) and a **Node.js Express Serverless API** (Backend) integrated with Firebase and the Groq AI Llama-3 model.
+# 🥦 NutriTrack AI
+
+### *Precision Nutrition Engineered for Peak Performance*
+
+[![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Firebase](https://img.shields.io/badge/Firebase-Firestore%20%7C%20Auth-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
+[![Groq AI](https://img.shields.io/badge/AI-Groq%20Llama--3-FF6B35)](https://groq.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+NutriTrack AI is a **full-stack, AI-powered nutrition tracking and meal planning app** built with Flutter and a Node.js serverless backend. From personalized 7-day meal plans to real-time macro tracking and smart grocery lists — everything is powered by Llama-3 AI and Firebase.
+
+</div>
+
+---
+
+## ✨ What's New (Latest Release)
+
+| Feature | Description |
+|---|---|
+| 🎨 **Light & Dark Theme** | Fully working system-aware theme toggle in Settings |
+| 🍳 **Custom Recipe Builder** | Interactive ingredient dialog with name, quantity & calorie inputs |
+| 🏠 **Live Home Refresh** | Home screen updates instantly after saving a recipe — no stale data |
+| 🔄 **Race Condition Fix** | Uses the `POST /meal` response log directly — no second API call needed |
+| 👤 **Realistic Profile Avatar** | Professional photo asset replacing placeholder |
+| 🔧 **Context Bug Fix** | Captures `Navigator` and `Cubit` before bottom sheet pops to avoid dead-context crashes |
 
 ---
 
 ## 🚀 Key Features
 
-### 📱 Flutter Mobile App (Frontend)
-*   **Premium Glassmorphic UI**: Vibrant, responsive designs matching Figma specifications with custom animations and transitions.
-*   **Onboarding Flow**: Multi-step metrics input (Biological Sex, Age, Height, Weight, Target Weight, and Activity Level) with instant BMR and calorie target calculations.
-*   **Firebase Authentication**: Complete Sign-Up, Login, and password reset flows.
-*   **Advanced Daily Dashboard**: Daily calorie and water tracking, meal logging (Breakfast, Lunch, Dinner, Snacks), and interactive macro-nutrient progress rings.
-*   **AI Meal Planner**: Generate a personalized 7-day meal plan based on target calories, dietary frameworks, and allergies.
-*   **Smart Grocery Lists**: Automatically compile a grocery list from your weekly meal plan, with checkable items and custom category sorting.
-*   **Food Search & Recipe Builder**: Search food items using the Open Food Facts API, barcode scanning, or build custom recipes.
-*   **Progress Analytics**: Weight trend charts and nutritional analytics.
+### 📱 Flutter Frontend
 
-### ⚡ Node.js Express API (Backend)
-*   **Groq AI Integration**: Leverages Llama-3 for generating weekly meal plans, suggesting meal swaps, and compiling grocery lists.
-*   **Firestore Database**: Secure Firestore management via Firebase Admin SDK for storing user profiles, daily tracking logs, custom recipes, and grocery lists.
-*   **Vercel Serverless Deployment**: Built-in support for Vercel Serverless Functions with a root-level routing configuration.
-*   **Integration Testing**: Comprehensive test suite covering all 40 API endpoints with mock data and automatic test reporting.
+- **Premium Glassmorphic UI** — Vibrant designs with custom animations, micro-interactions, and smooth transitions
+- **Light & Dark Mode** — Fully themed using Flutter's `ThemeData` + persistent `SharedPreferences` toggle
+- **Firebase Authentication** — Sign-Up, Login, and password reset flows with Firebase Auth
+- **Advanced Daily Dashboard** — Calorie ring, macro progress bars (Protein / Carbs / Fats), meal sections, and water tracker
+- **AI Weekly Meal Planner** — One-tap AI-generated 7-day meal plan (breakfast, lunch, dinner, snacks) with daily macro targets
+- **Custom Recipe Builder** — Build your own meals, add/edit/delete ingredients interactively, auto-logs to the daily tracker
+- **Food Search** — Search food items with calorie and macro info, log them directly to any meal slot
+- **Smart Grocery Lists** — Auto-compiled from your weekly plan with category grouping and checkbox completion tracking
+- **Water Tracking** — Log intake in cups/glasses/bottles, visualized with progress bar
+- **Progress Analytics** — Weight trend charts, calorie history, and nutritional analytics dashboard
+- **BLoC State Management** — Clean architecture with Cubit-based state handling per feature
+
+### ⚡ Node.js Backend
+
+- **Groq Llama-3 AI** — Weekly meal plan generation, meal swap suggestions, and smart grocery list compilation
+- **Firebase Admin SDK** — Secure Firestore CRUD for user profiles, daily logs, recipes, and grocery lists
+- **40+ REST API Endpoints** — Covering auth, tracking, AI, recipes, and grocery management
+- **Vercel Serverless** — Zero-config deployment with serverless functions
+- **Integration Test Suite** — 40-endpoint test coverage with auto-generated `test_results.md`
 
 ---
 
-## 📂 Project Structure
+## 🏗️ Architecture
 
-```text
+```
 NutriTrack/
-├── assets/                    # Image and vector assets for the mobile app
-├── backend/                   # Node.js Express Backend API
+├── assets/                        # App images, icons, and fonts
+│   └── images/
+│       └── avatar.jpeg            # Realistic profile photo asset
+│
+├── backend/                       # Node.js Express Serverless API
 │   ├── src/
-│   │   ├── controllers/      # API Controllers (Auth, AI, Tracking, etc.)
-│   │   ├── routes/           # Express Route Definitions
-│   │   ├── services/         # Business Logic & Third-Party Integrations
-│   │   └── config/           # Firebase Admin & Groq configurations
-│   ├── server.js             # API Entry Point
-│   ├── vercel.json           # Vercel deployment configuration
-│   └── test_all_endpoints.js # Integration Test Suite
-├── lib/                       # Flutter Frontend App
-│   ├── core/                 # Shared constants, themes, network clients, and routers
-│   ├── features/             # Feature-driven modules (Auth, AI Planner, Tracking)
-│   │   └── .../              # Models, UI screens, and ViewModels
-│   ├── presentation/         # Cubits (State Management) and reusable UI widgets
-│   ├── firebase_options.dart # Firebase configuration
-│   └── main.dart             # App Entry Point
-├── vercel.json                # Root-level Vercel deployment router
-└── README.md                  # Project Documentation
+│   │   ├── controllers/           # Route handlers (auth, AI, tracking, recipes)
+│   │   ├── routes/                # Express route definitions
+│   │   ├── services/              # Business logic & third-party integrations
+│   │   │   ├── tracking.service.js
+│   │   │   ├── ai.service.js
+│   │   │   ├── recipe.service.js
+│   │   │   └── analytics.service.js
+│   │   └── config/                # Firebase Admin & Groq config
+│   ├── server.js                  # Entry point
+│   ├── vercel.json                # Vercel deployment config
+│   └── test_all_endpoints.js      # Integration test suite
+│
+└── lib/                           # Flutter App
+    ├── core/
+    │   ├── network/               # Dio API client with auth token injection
+    │   ├── theme/                 # AppTheme (light + dark ThemeData)
+    │   └── widgets/               # Shared Header widget
+    │
+    ├── features/                  # Feature-first modular architecture
+    │   ├── analytics/             # Trends & charts (Cubit + Service + Screen)
+    │   ├── custom recipe/         # Recipe builder (Cubit + Service + Models)
+    │   ├── daily dashboard/       # Home screen (Cubit + Service + Screen)
+    │   ├── food details/          # Food detail view + meal logging
+    │   ├── foodSearch/            # Food search with filters
+    │   ├── grocery/               # Grocery list (Cubit + Service + Widgets)
+    │   ├── settings/              # Theme toggle, profile settings, logout
+    │   ├── waterTracking/         # Water intake tracking
+    │   └── weeklyMealPlanner/     # AI weekly plan viewer
+    │
+    ├── nutri_track_app.dart       # App root with BlocProviders & ThemeMode
+    └── main.dart                  # Entry point
 ```
 
 ---
 
 ## 🛠️ Getting Started
 
-### 1. Backend Setup (Node.js)
+### Prerequisites
 
-#### Prerequisites
-*   Node.js (v18 or higher)
-*   Firebase Project with Firestore and Authentication enabled
+| Tool | Version |
+|---|---|
+| Flutter SDK | ≥ 3.0.0 |
+| Dart | ≥ 3.0.0 |
+| Node.js | ≥ 18.0.0 |
+| Firebase Project | Firestore + Auth enabled |
+| Groq API Key | [Get one free](https://console.groq.com) |
 
-#### Installation & Run
-1.  Navigate to the backend directory:
-    ```bash
-    cd backend
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Create a `.env` file in the `backend/` directory:
-    ```env
-    PORT=3000
-    GROQ_API_KEY=your_groq_api_key_here
-    # Path to your Firebase Service Account JSON file:
-    FIREBASE_SERVICE_ACCOUNT=./config/serviceAccountKey.json
-    ```
-4.  Place your Firebase Service Account JSON file at `backend/src/config/serviceAccountKey.json`.
-5.  Start the local development server:
-    ```bash
-    npm run dev
-    ```
-    The server will start at `http://localhost:3000`.
+---
 
-#### Running Integration Tests
-To execute the comprehensive 40-endpoint integration test suite:
+### 1. Backend Setup
+
 ```bash
-# Make sure the local server is running, then execute:
-node test_all_endpoints.js
+# Navigate to backend
+cd backend
+
+# Install dependencies
+npm install
+
+# Create environment file
+cat > .env << 'EOF'
+PORT=3000
+GROQ_API_KEY=your_groq_api_key_here
+FIREBASE_SERVICE_ACCOUNT=./src/config/serviceAccountKey.json
+EOF
 ```
-The test results will be outputted directly to the console and saved in `test_results.md`.
+
+> Place your Firebase Service Account JSON at `backend/src/config/serviceAccountKey.json`
+
+```bash
+# Start local dev server
+npm run dev
+# → Running at http://localhost:3000
+```
+
+**Run Integration Tests:**
+```bash
+node test_all_endpoints.js
+# Runs all 40 endpoints and saves results to test_results.md
+```
 
 ---
 
-### 2. Frontend Setup (Flutter)
+### 2. Flutter Frontend Setup
 
-#### Prerequisites
-*   Flutter SDK (v3.0.0 or higher)
-*   Android Studio / Xcode (for emulation/device testing)
+```bash
+# Install dependencies
+flutter pub get
 
-#### Installation & Run
-1.  Install Flutter dependencies in the root directory:
-    ```bash
-    flutter pub get
-    ```
-2.  Configure Firebase:
-    Ensure your `lib/firebase_options.dart` contains the valid API keys, Project ID, and App IDs matching your Firebase Console configuration.
-3.  Run the application on your connected emulator or physical device:
-    ```bash
-    flutter run
-    ```
+# Run on connected device
+flutter run
+```
+
+> Ensure `lib/firebase_options.dart` has your Firebase project credentials (Project ID, API keys, App IDs).
 
 ---
 
-## 🔌 API Endpoints Summary
+## 🔌 API Reference
 
-### 👤 User Endpoints (`/api/users`)
-*   `POST /onboard` - Saves physical metrics and activity goals.
-*   `GET /profile` - Fetches the authenticated user's profile.
-*   `PUT /profile` - Updates profile information.
-*   `POST /recalculate-targets` - Re-calculates calorie and macro targets.
-*   `POST /sync-health` - Syncs steps and activity from Apple Health / Google Fit.
+### 👤 User Endpoints — `/api/users`
 
-### 📊 Tracking Endpoints (`/api/tracking`)
-*   `GET /daily/:date` - Fetches the daily log (calories, water, weight, meals).
-*   `POST /daily/:date/weight` - Logs the user's weight.
-*   `POST /daily/:date/water` - Logs water intake.
-*   `POST /daily/:date/meal` - Logs a meal item.
-*   `DELETE /daily/:date/meal` - Removes a logged meal item.
-*   `POST /tracking/fasting` - Logs a fasting session.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/onboard` | Save physical metrics & activity goals |
+| `GET` | `/profile` | Fetch authenticated user's profile |
+| `PUT` | `/profile` | Update profile information |
+| `POST` | `/recalculate-targets` | Re-calculate calorie & macro targets |
+| `POST` | `/sync-health` | Sync steps from Apple Health / Google Fit |
 
-### 🧠 AI Endpoints (`/api/ai`)
-*   `POST /recommend-meal` - Suggests meals based on remaining daily calories.
-*   `POST /generate-weekly-plan` - Generates a 7-day athletic meal plan.
-*   `GET /weekly-plan/latest` - Fetches the latest meal plan.
-*   `POST /swap-meal` - Swaps a meal with an alternative option.
-*   `POST /generate-grocery-list` - Generates a grocery list from a weekly plan.
+### 📊 Tracking Endpoints — `/api/tracking`
 
-### 🛒 Grocery List Endpoints (`/api/tracking/grocery`)
-*   `GET /` - Fetches all grocery lists.
-*   `GET /latest` - Fetches the latest grocery list.
-*   `POST /latest/item` - Adds a manual item to the latest grocery list (creates list if none exists).
-*   `PUT /latest/item` - Toggles item checked status.
-*   `DELETE /latest/checked` - Clears all checked items.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/daily/:date` | Fetch full daily log |
+| `POST` | `/daily/:date/weight` | Log body weight |
+| `POST` | `/daily/:date/water` | Log water intake |
+| `POST` | `/daily/:date/meal` | Log a meal item (returns updated log) |
+| `DELETE` | `/daily/:date/meal` | Remove a logged meal item |
+| `POST` | `/tracking/fasting` | Log a fasting session |
+
+### 🧠 AI Endpoints — `/api/ai`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/recommend-meal` | Suggest meals based on remaining calories |
+| `POST` | `/generate-weekly-plan` | Generate a 7-day AI meal plan |
+| `GET` | `/weekly-plan/latest` | Fetch the latest meal plan |
+| `POST` | `/swap-meal` | Swap a meal with an AI alternative |
+| `POST` | `/generate-grocery-list` | Generate grocery list from weekly plan |
+
+### 🍳 Recipe Endpoints — `/api/recipes`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/` | Create a custom recipe |
+| `GET` | `/` | List all saved recipes |
+| `GET` | `/:id` | Fetch a specific recipe |
+| `DELETE` | `/:id` | Delete a recipe |
+
+### 🛒 Grocery Endpoints — `/api/tracking/grocery`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Fetch all grocery lists |
+| `GET` | `/latest` | Fetch the latest grocery list |
+| `POST` | `/latest/item` | Add a manual item |
+| `PUT` | `/latest/item` | Toggle item checked status |
+| `DELETE` | `/latest/checked` | Clear all checked items |
+
+---
+
+## 🎨 Design System
+
+| Token | Value |
+|---|---|
+| **Primary Color** | `#4CAF50` (NutriGreen) |
+| **Font** | Inter / System default |
+| **Corner Radius** | 12px (cards), 99px (pills) |
+| **Theme** | Light + Dark, toggle persisted via SharedPreferences |
+| **State Management** | Flutter BLoC (Cubit pattern) |
+| **HTTP Client** | Dio with automatic Bearer token injection |
 
 ---
 
 ## ☁️ Deployment
 
-The backend is configured for serverless deployment on **Vercel**. 
+The backend is deployed as a **Vercel Serverless Function**.
 
-The root-level `vercel.json` ensures that all incoming traffic is cleanly routed to the Node.js Express application:
 ```json
+// vercel.json
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
-    }
-  ],
+  "builds": [{ "src": "backend/server.js", "use": "@vercel/node" }],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/server.js"
-    },
-    {
-      "src": "/health",
-      "dest": "backend/server.js"
-    },
-    {
-      "src": "/",
-      "dest": "backend/server.js"
-    }
+    { "src": "/api/(.*)", "dest": "backend/server.js" },
+    { "src": "/health", "dest": "backend/server.js" },
+    { "src": "/", "dest": "backend/server.js" }
   ]
 }
 ```
-Deploying to Vercel is as simple as pushing changes to the connected GitHub repository.
+
+**Live Backend:** `https://nutritrack-backend-blond.vercel.app`
+
+Push to the connected GitHub repository to auto-deploy via Vercel CI/CD.
+
+---
+
+## 🧪 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Mobile** | Flutter 3, Dart, BLoC/Cubit |
+| **Backend** | Node.js 18, Express.js |
+| **AI** | Groq Cloud — Llama-3 8B |
+| **Database** | Firebase Firestore |
+| **Auth** | Firebase Authentication |
+| **Deployment** | Vercel Serverless |
+| **HTTP** | Dio (Flutter), Axios (Node) |
+
+---
+
+## 👥 Team
+
+Built with ❤️ as part of a collaborative full-stack mobile development project.
+
+---
+
+<div align="center">
+  <sub>NutriTrack AI — Precision Nutrition for Peak Performance 🏆</sub>
+</div>

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutri_track/core/network/api_client.dart';
+import 'package:nutri_track/features/daily dashboard/cubits/daily_dashboard_cubit.dart';
 import '../models/custom_recipe_models.dart';
 import '../cubits/recipe_cubit.dart';
 import '../cubits/recipe_state.dart';
@@ -126,12 +127,19 @@ class _CustomRecipeBuilderScreenState
       );
       return;
     }
+    // Try to get the dashboard cubit to update it directly after logging
+    DailyDashboardCubit? dashboardCubit;
+    try {
+      dashboardCubit = context.read<DailyDashboardCubit>();
+    } catch (_) {}
+
     context.read<RecipeCubit>().saveRecipe(
           name: _nameController.text.trim(),
           ingredients: _ingredients,
           macros: _macros,
           date: widget.date,
           mealType: widget.mealType,
+          dashboardCubit: dashboardCubit,
         );
   }
 
