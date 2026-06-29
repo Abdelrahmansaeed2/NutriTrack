@@ -268,8 +268,47 @@ Push to the connected GitHub repository to auto-deploy via Vercel CI/CD.
 
 ## 👥 Team
 
-Built with:
-Abd Elrahman Saeed And
-Abd Elrahman Nader And
-Ebrahim reda And
-Mohmeed Maher 
+<div align="center">
+
+<table>
+<tr>
+
+<td align="center">
+<a href="https://github.com/Abdelrahmansaeed2">
+<img src="https://github.com/Abdelrahmansaeed2.png" width="120px;" alt="Abd Elrahman Saeed"/><br />
+<b>Abd Elrahman Saeed</b>
+</a>
+</td>
+
+<td align="center">
+<a href="https://github.com/abdelrahman-334">
+<img src="https://github.com/abdelrahman-334.png" width="120px;" alt="Abd Elrahman Nader"/><br />
+<b>Abd Elrahman Nader</b>
+</a>
+</td>
+
+<td align="center">
+<a href="https://github.com/ebrahimreda210-ctrl">
+<img src="https://github.com/ebrahimreda210-ctrl.png" width="120px;" alt="Ebrahim Reda"/><br />
+<b>Ebrahim Reda</b>
+</a>
+</td>
+
+<td align="center">
+<a href="https://github.com/MulllerMaher">
+<img src="https://github.com/MulllerMaher.png" width="120px;" alt="Mohamed Maher"/><br />
+<b>Mohamed Maher</b>
+</a>
+</td>
+
+<td align="center">
+<a href="https://github.com/salah3mer110">
+<img src="https://github.com/salah3mer110.png" width="120px;" alt="Salah Amer"/><br />
+<b>Salah Amer</b>
+</a>
+</td>
+
+</tr>
+</table>
+
+</div>
